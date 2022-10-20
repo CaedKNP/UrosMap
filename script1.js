@@ -1,4 +1,4 @@
-ele = document.getElementById("container");
+ele = document.body;
 let area;
 let pos = { x1: 0, x2: 0, y1: 0, y2: 0 };
 let length = 0;
