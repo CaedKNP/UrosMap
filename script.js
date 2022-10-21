@@ -54,7 +54,6 @@ const mouseDownHandler = function (e) {
         let b = pos.y1 - pos.y2;
         length = Math.sqrt( a*a + b*b )
 
-
         length = Math.round(length * 20 * (2000/img[0].height));
         window.alert("Odległość: " + length + "km\n" + "Dni drogi konno: " + Math.round(length/720));
         pos = { x1: 0, x2: 0, y1: 0, y2: 0 };
