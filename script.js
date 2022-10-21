@@ -1,7 +1,15 @@
 let ele = document.getElementById("container");
+let img = ele.getElementsByTagName('img');
 let area;
 let pos = { x1: 0, x2: 0, y1: 0, y2: 0 };
 let length = 0;
+
+let factor = 1.2;
+
+var dx = 0;
+var dy = 0;
+var maxY = 900;
+var maxX = maxY * 1.778;
 
 document.addEventListener("DOMContentLoaded", function(e) {
     area = ele.getElementsByTagName('area');
@@ -30,4 +38,27 @@ const mouseDownHandler = function (e) {
     }
 };
 
+const mouseWheel = function(e){
+    e.preventDefault();
+
+    if(e.deltaY < 0)
+        factor = 1.2;
+    else
+        factor = 0.8;
+
+    img[0].height *= factor;
+    img[0].width = img[0].height * 1.778;
+
+    if(img[0].width <= maxX)
+        img[0].width = maxX;
+    if(img[0].height <= maxY)
+        img[0].height = maxY;    
+
+    dy = (e.clientY + ele.scrollTop) * (factor - 1);
+    dx = (e.clientX + ele.scrollLeft) * (factor - 1);
+    ele.scrollTop += dy;
+    ele.scrollLeft += dx;
+};
+
 ele.addEventListener('mousedown', mouseDownHandler);
+ele.addEventListener('wheel', mouseWheel);
