@@ -10,6 +10,27 @@ var dx = 0;
 var dy = 0;
 var maxY = 900;
 var maxX = maxY * 1.778;
+var grab = true;
+
+document.addEventListener("keydown",  function(e) {
+    if (e.key == " " ||
+    e.code == "Space" ||      
+    e.keyCode == 32)
+    {
+        if(grab)
+        {
+            ele.style.cursor = 'grab';
+            ele.removeEventListener('mousedown', mouseDownHandler);
+            ele.addEventListener('mousedown', mouseGrab);
+        }
+        else{
+            ele.style.cursor = 'crosshair';
+            ele.removeEventListener('mousedown', mouseGrab);
+            ele.addEventListener('mousedown', mouseDownHandler);
+        }
+        grab = !grab;
+    }
+});
 
 document.addEventListener("DOMContentLoaded", function(e) {
     area = ele.getElementsByTagName('area');
@@ -32,7 +53,9 @@ const mouseDownHandler = function (e) {
         let a = pos.x1 - pos.x2;
         let b = pos.y1 - pos.y2;
         length = Math.sqrt( a*a + b*b )
-        length = Math.round(length * 20);
+
+
+        length = Math.round(length * 20 * (2000/img[0].height));
         window.alert("Odległość: " + length + "km\n" + "Dni drogi konno: " + Math.round(length/720));
         pos = { x1: 0, x2: 0, y1: 0, y2: 0 };
     }
@@ -60,5 +83,39 @@ const mouseWheel = function(e){
     ele.scrollLeft += dx;
 };
 
-ele.addEventListener('mousedown', mouseDownHandler);
+let mousePos = { top: 0, left: 0, x: 0, y: 0 };
+
+const mouseGrab = function (e) {
+    mousePos = {
+        // The current scroll
+        left: ele.scrollLeft,
+        top: ele.scrollTop,
+        // Get the current mouse position
+        x: e.clientX,
+        y: e.clientY,
+    };
+
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
+};
+
+const mouseMoveHandler = function (e) {
+    // How far the mouse has been moved
+    const dx = e.clientX - mousePos.x;
+    const dy = e.clientY - mousePos.y;
+
+    // Scroll the element
+    ele.scrollTop = mousePos.top - dy;
+    ele.scrollLeft = mousePos.left - dx;
+};
+
+const mouseUpHandler = function () {
+    document.removeEventListener('mousemove', mouseMoveHandler);
+    document.removeEventListener('mouseup', mouseUpHandler);
+
+    ele.style.cursor = 'grab';
+    ele.style.removeProperty('user-select');
+};
+
+ele.addEventListener('mousedown', mouseGrab);
 ele.addEventListener('wheel', mouseWheel);
